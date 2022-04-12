@@ -1,0 +1,17 @@
+body {
+   color: #d22e3a
+   background-color: light
+}
+h1 {
+    color: green;
+}
+
+header {
+ display: block;
+ height: 405px;
+ background: url(static/logo.png) repeat-x center bottom;
+}
+
+
+
+
