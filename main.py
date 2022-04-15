@@ -25,6 +25,10 @@ def load_user(user_id):
 @app.route("/")
 def index():
    db_sess = db_session.create_session()
+   last_id = os.listdir("static//data//channels")
+   for channel in range(int(last_id[-1]), 0, -1):
+       count_of_videos = len(os.listdir(f"static//data//channels//{channel}//videos"))
+       # for
    return render_template('base.html')
 
 @app.route("/profile")
@@ -94,8 +98,11 @@ def register():
 def video_uploading():
     form = VideoDownloadForm()
     if form.validate_on_submit():
-        f = form.video.data
-        f.save(f"static\\data\\channels\\{current_user.id}\\videos\\videotitle")
+        f_video = form.video.data
+        f_photo = form.photo.data
+        count_of_videos = len(os.listdir(f"static//data//channels//{current_user.id}//videos"))
+        f_video.save(f"static\\data\\channels\\{current_user.id}\\videos\\{count_of_videos}\\videotitle.mp4")
+        f_photo.save(f"static\\data\\channels\\{current_user.id}\\videos\\{count_of_videos}\\photo.png")
         return redirect('/profile')
     return render_template('upload_video.html', title='Загрузка видео', form=form)
 
