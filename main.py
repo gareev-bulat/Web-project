@@ -7,6 +7,7 @@ import os
 
 from sql_tables import db_session
 from sql_tables.users import User
+from sql_tables.videos import Video
 from forms.user import RegisterForm, LoginForm
 from forms.video import VideoDownloadForm
 
@@ -28,8 +29,13 @@ def index():
    last_id = os.listdir("static//data//channels")
    for channel in range(int(last_id[-1]), 0, -1):
        count_of_videos = len(os.listdir(f"static//data//channels//{channel}//videos"))
-       # for
-   return render_template('base.html')
+       temp = []
+       for video in range(count_of_videos - 1, -1, -1):
+           path = f"static//data//channels//{channel}//videos//{video}//photo.png"
+           title = db_sess.query(Video).filter(Video.user_id == channel and Video.video_id == count_of_videos).first()
+           print(title)
+           temp.append({"video": video, "channel": channel, "path": path, "name": title})
+   return render_template('index.html', videos=temp)
 
 @app.route("/profile")
 def my_profile():
@@ -101,8 +107,17 @@ def video_uploading():
         f_video = form.video.data
         f_photo = form.photo.data
         count_of_videos = len(os.listdir(f"static//data//channels//{current_user.id}//videos"))
+        os.mkdir(f"static\\data\\channels\\{current_user.id}\\videos\\{count_of_videos}")
         f_video.save(f"static\\data\\channels\\{current_user.id}\\videos\\{count_of_videos}\\videotitle.mp4")
         f_photo.save(f"static\\data\\channels\\{current_user.id}\\videos\\{count_of_videos}\\photo.png")
+        db_sess = db_session.create_session()
+        video = Video(
+            user_id=current_user.id,
+            video_id=count_of_videos,
+            video_name=form.title.data
+        )
+        db_sess.add(db_sess)
+        db_sess.commit()
         return redirect('/profile')
     return render_template('upload_video.html', title='Загрузка видео', form=form)
 

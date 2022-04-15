@@ -1,6 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% for item in videos %}
+<div style="text-align: center">
+    <img src="{{item.path}}" height="450px" width="750px" />
+    <h2></h2>
+</div>
+<br>
+{% endfor %}
+
+
 <h1>Works log</h1>
 {% if current_user.is_authenticated %}
     <a href="jobs" class="btn btn-secondary">Add job</a>
