@@ -33,8 +33,7 @@ def index():
        for video in range(count_of_videos - 1, -1, -1):
            path = f"static//data//channels//{channel}//videos//{video}//photo.png"
            title = db_sess.query(Video).filter(Video.user_id == channel and Video.video_id == count_of_videos).first()
-           print(title)
-           temp.append({"video": video, "channel": channel, "path": path, "name": title})
+           temp.append({"video": video, "channel": channel, "path": path, "name": title.video_name})
    return render_template('index.html', videos=temp)
 
 @app.route("/profile")
@@ -116,7 +115,7 @@ def video_uploading():
             video_id=count_of_videos,
             video_name=form.title.data
         )
-        db_sess.add(db_sess)
+        db_sess.add(video)
         db_sess.commit()
         return redirect('/profile')
     return render_template('upload_video.html', title='Загрузка видео', form=form)
