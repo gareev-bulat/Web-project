@@ -27,7 +27,6 @@ def load_user(user_id):
 def index():
    db_sess = db_session.create_session()
    channels = [user.id for user in db_sess.query(User).all()]
-   print(channels)
    temp = []
    for channel in channels:
        count_of_videos = len(os.listdir(f"static//data//channels//{channel}//videos"))
