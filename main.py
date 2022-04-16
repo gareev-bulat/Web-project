@@ -26,10 +26,11 @@ def load_user(user_id):
 @app.route("/")
 def index():
    db_sess = db_session.create_session()
-   last_id = os.listdir("static//data//channels")
-   for channel in range(int(last_id[-1]), 0, -1):
+   channels = [user.id for user in db_sess.query(User).all()]
+   print(channels)
+   temp = []
+   for channel in channels:
        count_of_videos = len(os.listdir(f"static//data//channels//{channel}//videos"))
-       temp = []
        for video in range(count_of_videos - 1, -1, -1):
            path = f"static//data//channels//{channel}//videos//{video}//photo.png"
            title = db_sess.query(Video).filter(Video.user_id == channel and Video.video_id == count_of_videos).first()
