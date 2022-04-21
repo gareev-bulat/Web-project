@@ -11,6 +11,12 @@ from sql_tables.videos import Video
 from forms.user import RegisterForm, LoginForm
 from forms.video import VideoDownloadForm
 
+
+API_TRANSLATER = 'http://translate.google.ru/translate_a/t?client=x&text={textToTranslate}&hl=en&sl=en&tl=ru'
+
+#{textToTranslate}, собственно и есть то, что нам надо перевести (с предложениями справлялось)
+#Ответ приходит в виде строки json, который нужно распарсить и получить translatedText = myJSON.sentences[0].trans;
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
@@ -83,10 +89,7 @@ def register():
             return render_template('register.html', title='Регистрация',
                                    form=form,
                                    message="Такой пользователь уже есть")
-        user = User(
-            name=form.name.data,
-            email=form.email.data,
-        )
+        user = User(name=form.name.data, email=form.email.data)
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
@@ -96,6 +99,11 @@ def register():
         f.save(os.path.join(f"static\\data\\channels\\{user.id}\\mini_image.png"))
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
+
+
+@app.route('/edit_profile', methods=['GET', 'POST'])
+def edit_profile():
+    pass
 
 
 @app.route("/upload_video", methods=['GET', 'POST'])

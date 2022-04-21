@@ -5,3 +5,19 @@
 .image:hover {
     transform: scale(1.1); /* Увеличиваем масштаб */
    }
+
+footer {
+
+    color: #00416a;
+    background-color: #4faab3;
+    height: 80px;
+    margin-top: 200px;
+
+}
+
+.footer_text {
+
+    margin: 20%;
+    padding: 10px;
+
+}

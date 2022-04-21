@@ -9,6 +9,7 @@ body {
 
 .card {
     width: 350px;
+    height: 500px;
     background-color: #efefef;
     border: none;
     cursor: pointer;
@@ -29,6 +30,7 @@ body {
     border-radius: 50%
 }
 
+
 .name {
     font-size: 22px;
     font-weight: bold
@@ -37,6 +39,7 @@ body {
 .idd {
     font-size: 14px;
     font-weight: 600
+    margin-right: 10px;
 }
 
 .idd1 {
@@ -63,6 +66,17 @@ body {
     font-size: 15px
 }
 
+.btn2 {
+
+    height: 40px;
+    width: 150px;
+    border: none;
+    background-color: #000;
+    color: #aeaeae;
+    font-size: 15px
+
+}
+
 .text span {
     font-size: 13px;
     color: #545454;
@@ -85,4 +99,10 @@ hr .new1 {
 
 .date {
     background-color: #ccc
+}
+
+.navbar-brand {
+    font-weight: 600;
+    font-size: 20pt;
+
 }
