@@ -11,9 +11,9 @@
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-light" style="background-color: #4faab3;"><img src="static/logo.png" alt="logotip" align="right" hspace="5">
+    <nav class="navbar navbar-light" style="background-color: #4faab3;"><img src="static/logo.png" alt="logotip" align="right">
         {% if current_user.is_authenticated %}
-        <a href = "/profile"><img src={{url_for('static', filename="data/channels/%s/mini_image.png" | format(current_user.id))}} height="50px" width="50px"/></a>>
+        <a href = "/profile"><img src={{url_for('static', filename="data/channels/%s/mini_image.png" | format(current_user.id))}} height="50px" width="50px" align="left"/></a>>
         {% else %}
         <div> </div>
 
@@ -25,7 +25,7 @@
     </nav>
 </header>
 <!-- Begin page content -->
-<main role="main" class="container">
+<main role="main" class="row">
     {% block content %}{% endblock %}
 </main>
 <footer>

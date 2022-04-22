@@ -1,20 +1,21 @@
-{% extends "base.html" %}
+{% extends "base2.html" %}
 
 {% block content %}
 
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/main_window.css')}}" />
-{% for item in videos %}
-<div style="text-align: center">
 
-    <video width="320" height="240" controls poster="{{item.path}}">
+
+{% for item in videos %}
+<div class="column">
+
+    <video width="400" height="300" controls poster="{{item.path}}">
 
         <source src="{{item.video_path}}" type="video/mp4">
 
     </video>
-    <br>
-    <br>
     <h2>{{item.name}}</h2>
 </div>
+
 <br>
 {% endfor %}
 

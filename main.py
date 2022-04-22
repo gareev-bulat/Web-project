@@ -64,7 +64,8 @@ def profile(user_id):
             db_sess = db_session.create_session()
             user = db_sess.query(User).filter(User.id == user_id).first()
             videos = db_sess.query(Video).filter(Video.video_id == user_id)
-            return render_template('profile.html', form=user, media=videos)
+            video_path = f"static//data//channels//{str(user)}//videos/{str(videos)}//videotitle.mp4"
+            return render_template('profile.html', form=user, media=video_path)
         else:
             return f"Профиль человека под id {user_id}"
 

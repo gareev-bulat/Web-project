@@ -21,3 +21,11 @@ footer {
     padding: 10px;
 
 }
+
+.column {
+  float: left;
+  width: 30%;
+  padding: 20px;
+}
+
+
