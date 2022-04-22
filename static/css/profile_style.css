@@ -7,6 +7,12 @@ body {
     background-color: #000
 }
 
+.w3-container {
+
+    margin-right: 10px;
+
+}
+
 .card {
     width: 350px;
     height: 500px;
@@ -105,4 +111,9 @@ hr .new1 {
     font-weight: 600;
     font-size: 20pt;
 
+}
+
+.container {
+    margin-left: 5px;
+    padding: 20px;
 }

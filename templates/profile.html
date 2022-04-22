@@ -28,7 +28,7 @@
 <!-- Begin page content -->
 <main role="main" class="container">
 
-<div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
+<div class="w3-container">
     <div class="card p-4">
         <div class=" image d-flex flex-column justify-content-center align-items-center"> <button class="btn btn-secondary"> <img src="{{url_for('static', filename='data/channels/1/mini_image.png')}}" height="100" width="100" /></button> <span class="name mt-3">{{ form.name }}</span> <span class="idd">Для деловых предложений - {{form.email}}</span>
             <div class="d-flex flex-row justify-content-center align-items-center mt-3"> <span class="number"> Кол-во подписчиков: </span> </div>
@@ -42,5 +42,11 @@
     </div>
 </div>
 </main>
+<video width="320" height="240" controls="controls">
+
+
+  <source src="{{url_for('static', filename='data/channels/1/videos/1/videotitle.mp4')}}" type="video/mp4">
+
+</video>
 </body>
 </html>

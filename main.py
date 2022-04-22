@@ -10,10 +10,16 @@ from sql_tables.users import User
 from sql_tables.videos import Video
 from forms.user import RegisterForm, LoginForm
 from forms.video import VideoDownloadForm
+import json
+import requests
 
 
-API_TRANSLATER = 'http://translate.google.ru/translate_a/t?client=x&text={textToTranslate}&hl=en&sl=en&tl=ru'
+API_TRANSLATER = 'http://translate.google.ru/translate_a/t?client=x&text={Привет}&sl={ru}&tl={en}'
 
+#info = requests.get(API_TRANSLATER)
+#answer = info.json()
+#print(answer)
+#print(response)
 #{textToTranslate}, собственно и есть то, что нам надо перевести (с предложениями справлялось)
 #Ответ приходит в виде строки json, который нужно распарсить и получить translatedText = myJSON.sentences[0].trans;
 
@@ -39,7 +45,8 @@ def index():
        for video in range(count_of_videos - 1, -1, -1):
            path = f"static//data//channels//{channel}//videos//{video}//photo.png"
            title = db_sess.query(Video).filter(Video.user_id == channel and Video.video_id == count_of_videos).first()
-           temp.append({"video": video, "channel": channel, "path": path, "name": title.video_name})
+           video_path = f"static//data//channels//{str(channel)}//videos/{str(video)}//videotitle.mp4"
+           temp.append({"video_path": video_path, "video": video, "channel": channel, "path": path, "name": title.video_name})
    return render_template('index.html', videos=temp)
 
 @app.route("/profile")
@@ -56,7 +63,8 @@ def profile(user_id):
         if current_user.id == user_id:
             db_sess = db_session.create_session()
             user = db_sess.query(User).filter(User.id == user_id).first()
-            return render_template('profile.html', form=user)
+            videos = db_sess.query(Video).filter(Video.video_id == user_id)
+            return render_template('profile.html', form=user, media=videos)
         else:
             return f"Профиль человека под id {user_id}"
 
