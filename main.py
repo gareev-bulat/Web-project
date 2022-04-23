@@ -37,17 +37,17 @@ def load_user(user_id):
 
 @app.route("/")
 def index():
-   db_sess = db_session.create_session()
-   channels = [user.id for user in db_sess.query(User).all()]
-   temp = []
-   for channel in channels:
-       count_of_videos = len(os.listdir(f"static//data//channels//{channel}//videos"))
-       for video in range(count_of_videos - 1, -1, -1):
-           path = f"static//data//channels//{channel}//videos//{video}//photo.png"
-           title = db_sess.query(Video).filter(Video.user_id == channel and Video.video_id == count_of_videos).first()
-           video_path = f"static//data//channels//{str(channel)}//videos/{str(video)}//videotitle.mp4"
-           temp.append({"video_path": video_path, "video": video, "channel": channel, "path": path, "name": title.video_name})
-   return render_template('index.html', videos=temp)
+    db_sess = db_session.create_session()
+    channels = [user.id for user in db_sess.query(User).all()]
+    temp = []
+    for channel in channels:
+        count_of_videos = len(os.listdir(f"static//data//channels//{channel}//videos"))
+        for video in range(count_of_videos - 1, -1, -1):
+            path = f"static//data//channels//{channel}//videos//{video}//photo.png"
+            title = db_sess.query(Video).filter(Video.user_id == channel, Video.video_id == video).first()
+            video_path = f"static//data//channels//{str(channel)}//videos/{str(video)}//videotitle.mp4"
+            temp.append({"video_path": video_path, "video": video, "channel": channel, "path": path, "name": title.video_name})
+    return render_template('index.html', videos=temp)
 
 @app.route("/profile")
 def my_profile():
