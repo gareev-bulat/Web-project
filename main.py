@@ -14,7 +14,7 @@ import json
 import requests
 
 
-API_TRANSLATER = 'http://translate.google.ru/translate_a/t?client=x&text={Привет}&sl={ru}&tl={en}'
+# API_TRANSLATER = 'http://translate.google.ru/translate_a/t?client=x&text={Привет}&sl={ru}&tl={en}'
 
 #info = requests.get(API_TRANSLATER)
 #answer = info.json()
@@ -68,6 +68,11 @@ def profile(user_id):
             return render_template('profile.html', form=user, media=video_path)
         else:
             return f"Профиль человека под id {user_id}"
+
+
+@app.route("/video/<int:video_id>")
+def video(video_id):
+    pass
 
 
 @app.route('/login', methods=['GET', 'POST'])
