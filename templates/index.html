@@ -6,14 +6,14 @@
 
 
 {% for item in videos %}
-<div class="column">
+<div class="column" style="margin-left: auto; margin-right: auto;">
 
     <video width="400" height="300" controls poster="{{item.path}}">
 
         <source src="{{item.video_path}}" type="video/mp4">
 
     </video>
-    <h2>{{item.name}}</h2>
+    <h2 >{{item.name}}</h2>
 </div>
 
 <br>

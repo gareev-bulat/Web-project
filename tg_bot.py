@@ -25,10 +25,12 @@ b1 = KeyboardButton('Войти в аккаунт')
 b3 = KeyboardButton('Опубликовать видео')
 
 b2 = KeyboardButton('Отмена')
+b4 = KeyboardButton('Вернуться обратно')
 
 kb_client = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(b1)
 kb_client_modern = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(b3)
 kb_client_cancel = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(b2)
+kb_client_cancel_video = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(b4)
 
 
 class FSMVideo(StatesGroup):
@@ -38,14 +40,14 @@ class FSMVideo(StatesGroup):
 
 async def cm_start_video(message: types.Message):
     await FSMVideo.name.set()
-    await message.reply('Введите название для видео.', reply_markup=kb_client_cancel)
+    await message.reply('Введите название для видео.', reply_markup=kb_client_cancel_video)
 
 
 async def cm_load_name(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['name'] = message.text
     await FSMVideo.next()
-    await message.reply('Супер! Теперь отправьте фото для превью.', reply_markup=kb_client_cancel)
+    await message.reply('Супер! Теперь отправьте фото для превью.', reply_markup=kb_client_cancel_video)
 
 
 async def cm_load_preview(message: types.Message, state: FSMContext):
@@ -53,35 +55,41 @@ async def cm_load_preview(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             data['preview'] = message.photo[-1].file_id
         await FSMVideo.next()
-        await message.reply('Супер! Теперь отправьте сам видеоролик.', reply_markup=kb_client_cancel)
+        await message.reply('Супер! Теперь отправьте сам видеоролик.', reply_markup=kb_client_cancel_video)
     except Exception as E:
         await message.reply('Что-то пошло не так!', reply_markup=kb_client_modern)
 
 
 async def cm_load_video(message: types.Video, state: FSMContext):
-    async with state.proxy() as data:
-        data['video'] = message.video.file_id
-        file = await bot.get_file(message.video.file_id)
-        file_path = file.file_path
+    try:
+        async with state.proxy() as data:
+            data['video'] = message.video.file_id
+            file = await bot.get_file(message.video.file_id)
+            file_path = file.file_path
 
-        file_photo = await bot.get_file(data['preview'])
-        file_path_photo = file_photo.file_path
+            file_photo = await bot.get_file(data['preview'])
+            file_path_photo = file_photo.file_path
 
-        db_sess = db_session.create_session()
-        user = db_sess.query(User).filter(User.telegram_id == message.from_user.id).first()
-        count_of_videos = len(os.listdir(f"static//data//channels//{user.id}//videos"))
-        video = Video(
-            user_id=user.id,
-            video_id=count_of_videos,
-            video_name=data['name']
-        )
-        db_sess.add(video)
-        db_sess.commit()
+            db_sess = db_session.create_session()
+            user = db_sess.query(User).filter(User.telegram_id == message.from_user.id).first()
+            count_of_videos = len(os.listdir(f"static//data//channels//{user.id}//videos"))
+            video = Video(
+                user_id=user.id,
+                video_id=count_of_videos,
+                video_name=data['name']
+            )
+            db_sess.add(video)
+            db_sess.commit()
 
-        await bot.download_file(file_path, f"static\\data\\channels\\{user.id}\\videos\\{count_of_videos}\\videotitle.mp4")
-        await bot.download_file(file_path_photo,
-                                f"static\\data\\channels\\{user.id}\\videos\\{count_of_videos}\\photo.png")
-    await message.reply('Супер! Загружаю на видеохостинг ваш ролик, подождите немного :)', reply_markup=kb_client_modern)
+            await bot.download_file(file_path, f"static\\data\\channels\\{user.id}\\videos\\{count_of_videos}\\videotitle.mp4")
+            await bot.download_file(file_path_photo,
+                                    f"static\\data\\channels\\{user.id}\\videos\\{count_of_videos}\\photo.png")
+        await message.reply('Супер! Загружаю на видеохостинг ваш ролик, подождите немного :)', reply_markup=kb_client_modern)
+        await state.finish()
+    except Exception as E:
+        await message.reply('Видео слишком большое! Для загрузки его на хостинг вам требуется зайти на сайт.',
+                            reply_markup=kb_client_modern)
+        await state.finish()
     # except Exception as E:
     #     await message.reply('Что-то пошло не так!', reply_markup=kb_client_modern)
     # await state.finish()
@@ -154,9 +162,18 @@ async def cancel_handler(message: types.Message, state: FSMContext):
     await message.reply('OK', reply_markup=kb_client)
 
 
+async def cancel_handler_video(message: types.Message, state: FSMContext):
+    current_state = await state.get_state()
+    if current_state is None:
+        return
+    await state.finish()
+    await message.reply('OK', reply_markup=kb_client_modern)
+
+
 def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(command_start, commands=["start", "help"])
     dp.register_message_handler(cancel_handler, Text(equals='Отмена', ignore_case=True), state="*")
+    dp.register_message_handler(cancel_handler_video, Text(equals='Вернуться обратно', ignore_case=True), state="*")
     dp.register_message_handler(cm_start_login, Text(equals='Войти в аккаунт', ignore_case=True), state=None)
     dp.register_message_handler(load_email, state=FSMLogin.email)
     dp.register_message_handler(load_password, state=FSMLogin.password)
