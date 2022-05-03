@@ -1,5 +1,5 @@
 from aiogram import Bot
-from aiogram import Dispatcher, types
+from aiogramdata import Dispatcher, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.utils import executor
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove

@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/main_window.css')}}" />
+
     <h1>Authorization</h1>
     <form action="" method="post">
         {{ form.hidden_tag() }}
