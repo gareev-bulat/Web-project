@@ -42,3 +42,8 @@
     color: grey;
 
 }
+
+
+video{
+   object-fit: cover;
+}
