@@ -26,7 +26,26 @@
 
 }
 
+input[type=text] {
+    width: 130px;
+    box-sizing: border-box;
+    border: 2px solid #4faab3;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: white;
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    padding: 12px 20px 12px 40px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+
+
+input[type=text]:focus {
+    width: 75%;
+}
 .column {
+  margin-top: 5%;
   float: left;
   width: 30%;
   padding: 20px;
