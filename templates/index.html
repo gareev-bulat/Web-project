@@ -1,9 +1,8 @@
-{% extends "base.html" %}
-<main role="main" class="container">
+{% extends "base2.html" %}
+
 {% block content %}
 
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/main_window.css')}}" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
 
 {% for item in videos %}
@@ -14,13 +13,10 @@
         <source src="{{item.video_path}}" type="video/mp4">
 
     </video>
-    <form action="" method="post">
-        <button name="foo" value="upvote">LIke</button>
-    </form>
+    <h2>{{item.name}}</h2>
 </div>
 
 <br>
 {% endfor %}
 
 {% endblock %}
-</main>
