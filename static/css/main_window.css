@@ -26,8 +26,8 @@
 
 }
 
-input[type=text] {
-    width: 130px;
+input[type=search] {
+    width: 210px;
     box-sizing: border-box;
     border: 2px solid #4faab3;
     border-radius: 4px;
@@ -41,8 +41,8 @@ input[type=text] {
 }
 
 
-input[type=text]:focus {
-    width: 75%;
+input[type=search]:focus {
+    width: 100%;
 }
 .column {
   margin-top: 5%;
@@ -65,4 +65,37 @@ input[type=text]:focus {
 
 video{
    object-fit: cover;
+}
+
+.search input {
+
+    border: 2px solid rgb(40, 167, 69);
+    border-radius: 0 0 0 0;
+    outline: none;
+    background: #F9F0DA;
+    color: black;
+
+}
+
+.search button {
+  position: absolute;
+  top: 10px;
+  width: 52px;
+  height: 52px;
+  border: none;
+  background: rgb(40, 167, 69);
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+}
+.search button:before {
+  content: "\f002";
+  font-family: FontAwesome;
+  font-size: 16px;
+  color: #F9F0DA;
+}
+
+
+
+
+
 }

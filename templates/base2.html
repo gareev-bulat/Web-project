@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
     <link rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -16,12 +17,11 @@
         {% if current_user.is_authenticated %}
         <a href = "/profile"><img src={{url_for('static', filename="data/channels/%s/mini_image.png" | format(current_user.id))}} height="50px" width="50px" align="left"/></a>>
         {% else %}
+
         <div class="search">
         <form>
-            <p>
-                <input type="text" name="search" placeholder="Search..">
-                <input type="submit" value="Найти">
-            </p>
+            <input type="search" name='result' placeholder="Search...">
+            <button type="submit"></button>
         </form>
         </div>
 
