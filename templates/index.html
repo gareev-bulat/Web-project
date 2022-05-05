@@ -16,9 +16,9 @@
     {% if current_user.is_authenticated %}
     <form action="" method="post">
         {% if item.is_liked is false %}
-        <button class="btn btn-primary" name="like" value= "{{item.video_path}}">Like</button>
+        <button class="btn btn-primary" name="button" value= "{{item.video_path}}">Like</button> <span class="badge badge-success">{{item.likes_count}}</span>
         {% else %}
-        <button class="btn btn-danger" name="dislike" value= "{{item.video_path}}">Delete Like</button>
+        <button class="btn btn-danger" name="button" value= "{{'dis' + item.video_path}}">Delete Like</button><span class="badge badge-success">{{item.likes_count}}</span>
         {% endif %}
     </form>
     {% endif %}

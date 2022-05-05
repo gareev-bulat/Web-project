@@ -4,6 +4,7 @@ from flask_login import LoginManager
 from flask_login.utils import login_user, login_required, current_user, logout_user
 
 import os
+import sys
 
 from sql_tables import db_session
 from sql_tables.users import User
@@ -39,37 +40,28 @@ def load_user(user_id):
 @app.route("/", methods=['POST', 'GET'])
 def index():
     if request.method == 'POST':
-        if request.form['like']:
-            line = request.form["like"]
-            line = line.split("//")
-            creator = line[3]
-            vd_ch = line[4].split("/")[1]
+        line = request.form["button"]
+        line = line.split("//")
+        creator = line[3]
+        vd_ch = line[4].split("/")[1]
 
-            db_sess = db_session.create_session()
+        db_sess = db_session.create_session()
 
-            a = db_sess.query(Video).filter(Video.video_id == vd_ch and Video.user_id == creator).first()
-            vd_id = a.id
+        a = db_sess.query(Video).filter(Video.video_id == vd_ch and Video.user_id == creator).first()
+        vd_id = a.id
 
-            br = Liked_video(user_id = current_user.id, video_id = vd_id)
-            db_sess.add(br)
-            db_sess.commit()
-
-
-        if request.form['dislike']:
-            line = request.form["like"]
-            line = line.split("//")
-            creator = line[3]
-            vd_ch = line[4].split("/")[1]
-
-            db_sess = db_session.create_session()
-
-            a = db_sess.query(Video).filter(Video.video_id == vd_ch and Video.user_id == creator).first()
-            vd_id = a.id
-
+        if line[0] == "disstatic":
             br = db_sess.query(Liked_video).filter(Liked_video.video_id == vd_id and Liked_video.user_id == current_user.id).first()
-            db_sess.delete(br)
+            try:
+                db_sess.delete(br)
+            except:
+                pass
             db_sess.commit()
-
+        elif line[0] == "static":
+            if len(db_sess.query(Liked_video).filter(Liked_video.video_id == vd_id and Liked_video.user_id == current_user.id).all()) == 0:
+                br = Liked_video(user_id = current_user.id, video_id = vd_id)
+                db_sess.add(br)
+                db_sess.commit()
 
     db_sess = db_session.create_session()
     channels = [user.id for user in db_sess.query(User).all()]
@@ -83,13 +75,18 @@ def index():
 
             a = db_sess.query(Video).filter(Video.video_id == video and Video.user_id == channel).first()
             vd_id = a.id
+
+
             a = db_sess.query(Liked_video).filter(Liked_video.video_id == vd_id and Liked_video.user_id == current_user.id).first()
             if a:
                 is_liked = True
             else:
                 is_liked = False
 
-            temp.append({"video_path": video_path, "video": video, "channel": channel, "path": path, "name": title.video_name, "is_liked": is_liked})
+
+            likes_count = len(db_sess.query(Liked_video).filter(Liked_video.video_id == vd_id).all())
+
+            temp.append({"video_path": video_path, "video": video, "channel": channel, "path": path, "name": title.video_name, "is_liked": is_liked, "likes_count": likes_count})
     return render_template('index.html', videos=temp)
 
 @app.route("/profile")
