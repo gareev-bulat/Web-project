@@ -21,9 +21,3 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
                                      default=datetime.datetime.now)
     telegram_auth = sqlalchemy.Column(sqlalchemy.Boolean, nullable=True, default=False)
     telegram_id = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
-
-    def set_password(self, password):
-        self.hashed_password = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.hashed_password, password)
