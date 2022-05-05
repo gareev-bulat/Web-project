@@ -66,8 +66,8 @@ def index():
             a = db_sess.query(Video).filter(Video.video_id == vd_ch and Video.user_id == creator).first()
             vd_id = a.id
 
-            br = Liked_video(user_id = current_user.id, video_id = vd_id)
-            db_sess.add(br)
+            br = db_sess.query(Liked_video).filter(Liked_video.video_id == vd_id and Liked_video.user_id == current_user.id).first()
+            db_sess.delete(br)
             db_sess.commit()
 
 
