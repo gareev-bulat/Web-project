@@ -13,9 +13,15 @@
 
     </video>
     <h2>{{item.name}}</h2>
+    {% if current_user.is_authenticated %}
     <form action="" method="post">
-        <button name="foo" value="upvote">LIke</button>
+        {% if item.is_liked is false %}
+        <button class="btn btn-primary" name="like" value= "{{item.video_path}}">Like</button>
+        {% else %}
+        <button class="btn btn-danger" name="dislike" value= "{{item.video_path}}">Delete Like</button>
+        {% endif %}
     </form>
+    {% endif %}
 </div>
 
 

@@ -8,6 +8,7 @@ import os
 from sql_tables import db_session
 from sql_tables.users import User
 from sql_tables.videos import Video
+from sql_tables.liked_videos import Liked_video
 from forms.user import RegisterForm, LoginForm
 from forms.video import VideoDownloadForm
 import json
@@ -37,6 +38,39 @@ def load_user(user_id):
 
 @app.route("/", methods=['POST', 'GET'])
 def index():
+    if request.method == 'POST':
+        if request.form['like']:
+            line = request.form["like"]
+            line = line.split("//")
+            creator = line[3]
+            vd_ch = line[4].split("/")[1]
+
+            db_sess = db_session.create_session()
+
+            a = db_sess.query(Video).filter(Video.video_id == vd_ch and Video.user_id == creator).first()
+            vd_id = a.id
+
+            br = Liked_video(user_id = current_user.id, video_id = vd_id)
+            db_sess.add(br)
+            db_sess.commit()
+
+
+        if request.form['dislike']:
+            line = request.form["like"]
+            line = line.split("//")
+            creator = line[3]
+            vd_ch = line[4].split("/")[1]
+
+            db_sess = db_session.create_session()
+
+            a = db_sess.query(Video).filter(Video.video_id == vd_ch and Video.user_id == creator).first()
+            vd_id = a.id
+
+            br = Liked_video(user_id = current_user.id, video_id = vd_id)
+            db_sess.add(br)
+            db_sess.commit()
+
+
     db_sess = db_session.create_session()
     channels = [user.id for user in db_sess.query(User).all()]
     temp = []
@@ -46,7 +80,16 @@ def index():
             path = f"static//data//channels//{channel}//videos//{video}//photo.png"
             title = db_sess.query(Video).filter(Video.user_id == channel, Video.video_id == video).first()
             video_path = f"static//data//channels//{str(channel)}//videos/{str(video)}//videotitle.mp4"
-            temp.append({"video_path": video_path, "video": video, "channel": channel, "path": path, "name": title.video_name})
+
+            a = db_sess.query(Video).filter(Video.video_id == video and Video.user_id == channel).first()
+            vd_id = a.id
+            a = db_sess.query(Liked_video).filter(Liked_video.video_id == vd_id and Liked_video.user_id == current_user.id).first()
+            if a:
+                is_liked = True
+            else:
+                is_liked = False
+
+            temp.append({"video_path": video_path, "video": video, "channel": channel, "path": path, "name": title.video_name, "is_liked": is_liked})
     return render_template('index.html', videos=temp)
 
 @app.route("/profile")

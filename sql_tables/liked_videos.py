@@ -7,8 +7,8 @@ from sqlalchemy_serializer import SerializerMixin
 from flask_login import UserMixin
 
 
-class Liked_videos(SqlAlchemyBase, UserMixin, SerializerMixin):
-    __tablename__ = 'users'
+class Liked_video(SqlAlchemyBase, UserMixin, SerializerMixin):
+    __tablename__ = 'liked_videos'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     user_id = sqlalchemy.Column(sqlalchemy.Integer,
