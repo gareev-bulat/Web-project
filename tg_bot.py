@@ -1,5 +1,5 @@
 from aiogram import Bot
-from aiogramdata import Dispatcher, types
+from aiogram import Dispatcher, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.utils import executor
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
@@ -23,14 +23,23 @@ dp = Dispatcher(bot, storage=storage)
 
 b1 = KeyboardButton('Войти в аккаунт')
 b3 = KeyboardButton('Опубликовать видео')
+b5 = KeyboardButton('Изменить стиль профиля')
+
+a1 = KeyboardButton("Чёрный")
+a2 = KeyboardButton("Красный")
+a3 = KeyboardButton("Голубой")
+a4 = KeyboardButton("Зелёный")
+a5 = KeyboardButton("Розовый")
+a6 = KeyboardButton("Белый")
 
 b2 = KeyboardButton('Отмена')
 b4 = KeyboardButton('Вернуться обратно')
 
 kb_client = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(b1)
-kb_client_modern = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(b3)
+kb_client_modern = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(b3).row(b5)
 kb_client_cancel = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(b2)
 kb_client_cancel_video = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(b4)
+kb_client_color = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).row(a1, a2).row(a3, a4).row(a5, a6)
 
 
 class FSMVideo(StatesGroup):
@@ -139,14 +148,47 @@ async def load_password(message: types.Message, state: FSMContext):
     await state.finish()
 
 
-
-
 async def load_text_ru(message: types.Message, state: FSMContext):
     params = {"langpair": "en|ru", "q": message.text, "mt": "1", "onlyprivate": "0", "de": "a@b.c"}
     data = get(f"https://translated-mymemory---translation-memory.p.rapidapi.com/api/get", headers=headers, params=params).json()
 
     await bot.send_message(message.from_user.id, f"Translation: {data['responseData']['translatedText']}", reply_markup=kb_client)
     await state.finish()
+
+
+class FSMStyle(StatesGroup):
+    color = State()
+
+async def cm_start_style(message: types.Message):
+    await FSMStyle.color.set()
+    await message.reply('Какой цвет профиля вы хотите?', reply_markup=kb_client_color)
+
+
+async def load_style(message: types.Message, state: FSMContext):
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.telegram_id == message.from_user.id).first()
+    if message.text.lower() == 'белый':
+        user.css_style = 'white'
+        db_sess.commit()
+    elif message.text.lower() == 'розовый':
+        user.css_style = 'pink'
+        db_sess.commit()
+    elif message.text.lower() == 'зелёный':
+        user.css_style = 'green'
+        db_sess.commit()
+    elif message.text.lower() == 'чёрный':
+        user.css_style = 'black'
+        db_sess.commit()
+    elif message.text.lower() == 'красный':
+        user.css_style = 'red'
+        db_sess.commit()
+    elif message.text.lower() == 'голубой':
+        user.css_style = 'blue'
+        db_sess.commit()
+
+    await message.reply('Отличый выбор! Ваш профиль изменен.', reply_markup=kb_client_modern)
+    await state.finish()
+
 
 
 async def command_start(message: types.Message):
@@ -181,6 +223,8 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(cm_load_name, state=FSMVideo.name)
     dp.register_message_handler(cm_load_preview, content_types=['photo'], state=FSMVideo.preview)
     dp.register_message_handler(cm_load_video, content_types=['video'], state=FSMVideo.video)
+    dp.register_message_handler(cm_start_style, Text(equals='Изменить стиль профиля', ignore_case=True), state=None)
+    dp.register_message_handler(load_style, state=FSMStyle.color)
 
 register_handlers_admin(dp)
 executor.start_polling(dp, skip_updates=True)
