@@ -50,18 +50,18 @@ def index():
 
         db_sess = db_session.create_session()
 
-        a = db_sess.query(Video).filter(Video.video_id == vd_ch and Video.user_id == creator).first()
+        a = db_sess.query(Video).filter(Video.video_id == vd_ch, Video.user_id == creator).first()
         vd_id = a.id
 
         if line[0] == "disstatic":
-            br = db_sess.query(Liked_video).filter(Liked_video.video_id == vd_id and Liked_video.user_id == current_user.id).first()
+            br = db_sess.query(Liked_video).filter(Liked_video.video_id == vd_id, Liked_video.user_id == current_user.id).first()
             try:
                 db_sess.delete(br)
             except:
                 pass
             db_sess.commit()
         elif line[0] == "static":
-            if len(db_sess.query(Liked_video).filter(Liked_video.video_id == vd_id and Liked_video.user_id == current_user.id).all()) == 0:
+            if len(db_sess.query(Liked_video).filter(Liked_video.video_id == vd_id, Liked_video.user_id == current_user.id).all()) == 0:
                 br = Liked_video(user_id = current_user.id, video_id = vd_id)
                 db_sess.add(br)
                 db_sess.commit()
@@ -76,11 +76,11 @@ def index():
             title = db_sess.query(Video).filter(Video.user_id == channel, Video.video_id == video).first()
             video_path = f"static//data//channels//{str(channel)}//videos/{str(video)}//videotitle.mp4"
 
-            a = db_sess.query(Video).filter(Video.video_id == video and Video.user_id == channel).first()
+            a = db_sess.query(Video).filter(Video.video_id == video, Video.user_id == channel).first()
             vd_id = a.id
 
 
-            a = db_sess.query(Liked_video).filter(Liked_video.video_id == vd_id and Liked_video.user_id == current_user.id).first()
+            a = db_sess.query(Liked_video).filter(Liked_video.video_id == vd_id, Liked_video.user_id == current_user.id).first()
             if a:
                 is_liked = True
             else:
