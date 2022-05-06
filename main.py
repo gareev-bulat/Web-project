@@ -12,8 +12,10 @@ from sql_tables.videos import Video
 from sql_tables.liked_videos import Liked_video
 from forms.user import RegisterForm, LoginForm
 from forms.video import VideoDownloadForm
+from flask_restful import reqparse, abort, Api, Resource
 import json
 import requests
+import user_resources
 
 
 # API_TRANSLATER = 'http://translate.google.ru/translate_a/t?client=x&text={Привет}&sl={ru}&tl={en}'
@@ -26,6 +28,7 @@ import requests
 #Ответ приходит в виде строки json, который нужно распарсить и получить translatedText = myJSON.sentences[0].trans;
 
 app = Flask(__name__)
+api = Api(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 login_manager = LoginManager()
@@ -205,6 +208,9 @@ def logout():
 
 def main():
     db_session.global_init("db/blogs.db")
+
+    api.add_resource(user_resources.UsersResource, '/api/v2/user/<int:user_id>')
+
     app.run(port=8080, host='127.0.0.1')
 
 
