@@ -107,7 +107,18 @@ def profile(user_id):
             user = db_sess.query(User).filter(User.id == user_id).first()
             videos = db_sess.query(Video).filter(Video.video_id == user_id)
             video_path = f"static//data//channels//{str(user)}//videos/{str(videos)}//videotitle.mp4"
-            return render_template('profile.html', form=user, media=video_path)
+            if user.css_style == 'black':
+                return render_template('profile.html', form=user, media=video_path)
+            elif user.css_style == 'white':
+                return render_template('profile_white.html', form=user, media=video_path)
+            elif user.css_style == 'blue':
+                return render_template('profile_blue.html', form=user, media=video_path)
+            elif user.css_style == 'red':
+                return render_template('profile_red.html', form=user, media=video_path)
+            elif user.css_style == 'pink':
+                return render_template('profile_pink.html', form=user, media=video_path)
+            elif user.css_style == 'green':
+                return render_template('profile_green.html', form=user, media=video_path)
         else:
             return f"Профиль человека под id {user_id}"
 
