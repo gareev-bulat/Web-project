@@ -80,12 +80,15 @@ def index():
             vd_id = a.id
 
 
-            a = db_sess.query(Liked_video).filter(Liked_video.video_id == vd_id, Liked_video.user_id == current_user.id).first()
-            if a:
-                is_liked = True
-            else:
-                is_liked = False
-
+            is_liked = False
+            try:
+                a = db_sess.query(Liked_video).filter(Liked_video.video_id == vd_id, Liked_video.user_id == current_user.id).first()
+                if a:
+                    is_liked = True
+                else:
+                    is_liked = False
+            except:
+                pass
             likes_count = len(db_sess.query(Liked_video).filter(Liked_video.video_id == vd_id).all())
 
             temp.append({"video_path": video_path, "video": video, "channel": channel, "path": path, "name": title.video_name, "is_liked": is_liked, "likes_count": likes_count})
